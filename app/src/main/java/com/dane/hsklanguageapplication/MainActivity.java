@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnHsk4 = findViewById(R.id.hsk4);
         Button btnHsk5 = findViewById(R.id.hsk5);
         Button btnHsk6 = findViewById(R.id.hsk6);
+        Button btnDictionary = findViewById(R.id.btnDictionary);
 
         btnHsk1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +64,13 @@ public class MainActivity extends AppCompatActivity {
                 openHsk6();
             }
         });
+        btnDictionary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDictionary();
+            }
+        });
+
     }
 
     public void openHsk1 (){
@@ -99,5 +107,10 @@ public class MainActivity extends AppCompatActivity {
         Intent openHsk6Intent = new Intent(this, HskHanziChoiceGame.class);
         openHsk6Intent.putExtra("hsk", "hsk6.json");
         startActivity(openHsk6Intent);
+    }
+
+    public void openDictionary(){
+        Intent openDictionary = new Intent(this, DictionaryActivity.class);
+        startActivity(openDictionary);
     }
 }
