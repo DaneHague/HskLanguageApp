@@ -1,19 +1,28 @@
 package com.dane.hsklanguageapplication;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         Button btnHsk1 = findViewById(R.id.hsk1);
         Button btnHsk2 = findViewById(R.id.hsk2);
@@ -64,9 +73,12 @@ public class MainActivity extends AppCompatActivity {
                 openHsk6();
             }
         });
+
         btnDictionary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                String s = "你好， 我会说中文";
+//                t1.speak(s,TextToSpeech.QUEUE_FLUSH, null);
                 openDictionary();
             }
         });
@@ -113,4 +125,5 @@ public class MainActivity extends AppCompatActivity {
         Intent openDictionary = new Intent(this, DictionaryActivity.class);
         startActivity(openDictionary);
     }
+
 }

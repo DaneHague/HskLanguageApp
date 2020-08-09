@@ -1,12 +1,17 @@
 package com.dane.hsklanguageapplication;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -17,12 +22,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-public class DictionaryActivity extends AppCompatActivity {
+public class DictionaryActivity extends AppCompatActivity implements RecyclerAdapter.OnHanziListener {
 
+    TextToSpeech t1;
     private RecyclerView recyclerView;
     private List<DictionaryEntry> dicList = new ArrayList<>();
+    Button btnSpeak;
+    JSONArray hanziArray;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +45,34 @@ public class DictionaryActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RecyclerAdapter adapter = new RecyclerAdapter(dicList);
+        RecyclerAdapter adapter = new RecyclerAdapter(dicList, this);
         recyclerView.setAdapter(adapter);
+
+        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onInit(int i) {
+                if (i == TextToSpeech.SUCCESS){
+                    t1.setLanguage(Locale.SIMPLIFIED_CHINESE);
+                } else{
+                    Log.e("TTS", "Not working");
+                }
+            }
+        });
+
+        recyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("view Click", "Clicking is working");
+                t1.speak("this is a test", TextToSpeech.QUEUE_FLUSH, null);
+            }
+        });
+
+        try {
+            hanziArray = selectHanZi();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
     private void prepareTheList() throws JSONException {
@@ -84,4 +120,10 @@ public class DictionaryActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onHanziClick(int position) throws JSONException {
+        String readHanzi = hanziArray.getJSONObject(position).optString("hanzi");
+        t1.speak(readHanzi,TextToSpeech.QUEUE_FLUSH, null);
+
+    }
 }
