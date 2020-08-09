@@ -44,6 +44,12 @@ public class HskHanziChoiceGame extends AppCompatActivity {
         createGame(score, true, hsk);
     }
 
+
+    /**
+     *
+     * @param hsk File that needs to be returned
+     * @return returns the file contents as a string
+     */
     public String readJSONFromAsset(String hsk) {
         String json = null;
         try {
@@ -60,6 +66,12 @@ public class HskHanziChoiceGame extends AppCompatActivity {
         return json;
     }
 
+    /**
+     *
+     * @param hsk Pass the HSK file that needs to be opened e.g. hsk 1 or hsk 2
+     * @return Returns a JSONArray of 4 selected characters (at random), the objects hold the Hanzi, Pinyin and the translations for the characters
+     * @throws JSONException
+     */
     public JSONArray selectHanZi(String hsk) throws JSONException {
         JSONArray jsA = new JSONArray(readJSONFromAsset(hsk));
         JSONArray selectedHanZi = new JSONArray();
@@ -77,6 +89,12 @@ public class HskHanziChoiceGame extends AppCompatActivity {
         return selectedHanZi ;
     }
 
+    /**
+     *
+     * @param score This is the continuing score of the game
+     * @param hanzi This is a toggle between displaying the hanzi at the top or as the four buttons
+     * @param hsk This is the hsk file that you want to open e.g. hsk 1 or hsk 2
+     */
     public void createGame(final int score, boolean hanzi, String hsk){
         final Integer[] countingScore = {score};
         final TextView textScore = (TextView) findViewById(R.id.txtScore);
@@ -275,6 +293,11 @@ public class HskHanziChoiceGame extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    /**
+     * This will flip a view.
+     * @param viewToFlip What do you want to flip?
+     */
     private void flipIt(final View viewToFlip) {
         ObjectAnimator flip = ObjectAnimator.ofFloat(viewToFlip, "rotationX", 0f, 360f);
         flip.setDuration(600);
