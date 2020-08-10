@@ -85,7 +85,8 @@ public class DictionaryActivity extends AppCompatActivity implements RecyclerAda
         JSONArray arr = selectHanZi();
 
         for(int i = 0; i < arr.length(); i++){
-            DictionaryEntry dicEntry = new DictionaryEntry(arr.getJSONObject(i).getString("hanzi"),
+            DictionaryEntry dicEntry = new DictionaryEntry(arr.getJSONObject(i).getInt("id"),
+                    arr.getJSONObject(i).getString("hanzi"),
                     arr.getJSONObject(i).getString("pinyin"),
                     arr.getJSONObject(i).getString("translations").replaceAll("\\[|]|\"","").replace(",", ", "));
             dicList.add(dicEntry);
@@ -116,6 +117,7 @@ public class DictionaryActivity extends AppCompatActivity implements RecyclerAda
         for (int i = 0; i < jsA.length(); i++){
             JSONObject tmp = new JSONObject();
 
+            tmp.put("id",jsA.getJSONObject(i).optString("id"));
             tmp.put("hanzi",jsA.getJSONObject(i).optString("hanzi"));
             tmp.put("pinyin", jsA.getJSONObject(i).optString("pinyin"));
             tmp.put( "translations", jsA.getJSONObject(i).optString("translations"));
@@ -126,9 +128,10 @@ public class DictionaryActivity extends AppCompatActivity implements RecyclerAda
 
 
     @Override
-    public void onHanziClick(int position) throws JSONException {
+    public void onHanziClick(int position, String tst) throws JSONException {
+
         String readHanzi = hanziArray.getJSONObject(position).optString("hanzi");
-        t1.speak(readHanzi,TextToSpeech.QUEUE_FLUSH, null);
+        t1.speak(tst,TextToSpeech.QUEUE_FLUSH, null);
 
     }
 
@@ -146,7 +149,6 @@ public class DictionaryActivity extends AppCompatActivity implements RecyclerAda
             @Override
             public boolean onQueryTextChange(String newText) {
                 adapter.getFilter().filter(newText);
-                Log.e("tst", newText);
                 return false;
             }
         });

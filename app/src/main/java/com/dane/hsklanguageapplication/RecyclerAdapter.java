@@ -110,7 +110,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Dictio
         @Override
         public void onClick(View view) {
             try {
-                onHanziListener.onHanziClick(getAdapterPosition());
+                onHanziListener.onHanziClick(getAdapterPosition(), (String) dicHanzi.getText());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -118,7 +118,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Dictio
     }
 
     public interface OnHanziListener {
-        void onHanziClick(int position) throws JSONException;
+        void onHanziClick(int position, String tst) throws JSONException;
         }
     }
 
