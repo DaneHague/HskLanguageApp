@@ -35,11 +35,25 @@ public class HskHanziChoiceGame extends AppCompatActivity{
     private Button btnNext;
     private TextView txtTranslation;
     private ImageButton btnFlipPinyin;
+    TextToSpeech t1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hsk_hanzi_choice_game);
+
+        //Set the text to speech
+        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onInit(int i) {
+                if (i == TextToSpeech.SUCCESS){
+                    t1.setLanguage(Locale.SIMPLIFIED_CHINESE);
+                } else{
+                    Log.e("TTS", "Not working");
+                }
+            }
+        });
 
         Intent intent = getIntent();
         String hsk = intent.getStringExtra("hsk");
@@ -292,10 +306,18 @@ public class HskHanziChoiceGame extends AppCompatActivity{
                 }
             });
 
-
-        } catch (JSONException e) {
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    t1.speak(answerHanzi, TextToSpeech.QUEUE_FLUSH, null);
+                }
+            });
+       } catch (JSONException e) {
             e.printStackTrace();
         }
+
+
+
     }
 
     /**

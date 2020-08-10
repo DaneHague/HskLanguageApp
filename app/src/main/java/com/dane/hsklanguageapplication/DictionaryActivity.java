@@ -2,6 +2,7 @@ package com.dane.hsklanguageapplication;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,6 +10,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -32,6 +35,7 @@ public class DictionaryActivity extends AppCompatActivity implements RecyclerAda
     private List<DictionaryEntry> dicList = new ArrayList<>();
     Button btnSpeak;
     JSONArray hanziArray;
+    RecyclerAdapter adapter;
 
 
     @Override
@@ -45,7 +49,7 @@ public class DictionaryActivity extends AppCompatActivity implements RecyclerAda
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RecyclerAdapter adapter = new RecyclerAdapter(dicList, this);
+        adapter = new RecyclerAdapter(dicList, this);
         recyclerView.setAdapter(adapter);
 
         t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -75,6 +79,7 @@ public class DictionaryActivity extends AppCompatActivity implements RecyclerAda
         }
 
     }
+
     private void prepareTheList() throws JSONException {
 
         JSONArray arr = selectHanZi();
@@ -125,5 +130,27 @@ public class DictionaryActivity extends AppCompatActivity implements RecyclerAda
         String readHanzi = hanziArray.getJSONObject(position).optString("hanzi");
         t1.speak(readHanzi,TextToSpeech.QUEUE_FLUSH, null);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        MenuItem item = menu.findItem(R.id.actionSearc);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                Log.e("tst", newText);
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 }

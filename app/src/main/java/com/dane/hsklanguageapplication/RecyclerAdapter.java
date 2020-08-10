@@ -1,31 +1,33 @@
 package com.dane.hsklanguageapplication;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONException;
 
-import java.util.Dictionary;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.DictionaryViewHolder> {
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.DictionaryViewHolder> implements Filterable {
+
+    List<DictionaryEntry> allListHanzi;
     private List<DictionaryEntry> dicList;
     private OnHanziListener mOnHanziListener;
     public RecyclerAdapter(List<DictionaryEntry> dicList, OnHanziListener onHanziListener)
     {
         this.dicList = dicList;
         this.mOnHanziListener = onHanziListener;
+        this.allListHanzi = new ArrayList<>(dicList);
     }
 
     @NonNull
@@ -51,6 +53,41 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Dictio
     public int getItemCount() {
         return dicList.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+
+            List<DictionaryEntry> filteredList = new ArrayList<>();
+
+            if (charSequence.toString().isEmpty()){
+                filteredList.addAll(allListHanzi);
+            } else {
+                for (DictionaryEntry hanzi: allListHanzi){
+                    if (hanzi.hanzi.contains(charSequence.toString()) || hanzi.pinyin.contains(charSequence.toString()) || hanzi.translations.contains(charSequence.toString())){
+                        filteredList.add(hanzi);
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredList;
+
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            dicList.clear();
+            Log.e("1", "published");
+            dicList.addAll((Collection<? extends DictionaryEntry>) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public static class DictionaryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
